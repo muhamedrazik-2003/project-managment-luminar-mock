@@ -61,7 +61,7 @@ exports.editProject = async (req, res) => {
       budget,
     } = req.body;
     const { projectId } = req.params;
-    console.log("params recieved in editProject", req.params);
+    console.log("params recieved in editProject", req.params.projectId);
 
     if (
       !projectName ||
@@ -79,13 +79,7 @@ exports.editProject = async (req, res) => {
     if (!projectId)
       return res.status(400).json({ message: "Please Provide projectId" });
 
-    const exisitingProject = await projects.findById(projectId);
-    if (!exisitingProject)
-      return res
-        .status(400)
-        .json({ message: "Project Not found . Check your Project Id" });
-
-    const updatedProject = await projects.findByIdAndUpdate(
+    const updatedProject = await projects.findByIdAndUpdate({_id : projectId},
       {
         projectName,
         projectManager,
@@ -98,11 +92,16 @@ exports.editProject = async (req, res) => {
       { new: true }
     );
 
+    if (!updatedProject)
+      return res
+        .status(400)
+        .json({ message: "Project Not found . Check your Project Id" });
+
     console.log("new updated project : ", updatedProject);
 
     res
       .status(201)
-      .json({ message: "Project added Successfully", project: updatedProject });
+      .json({ message: "Project Updated Successfully", project: updatedProject });
   } catch (error) {
     console.error(error);
     res
@@ -145,11 +144,10 @@ exports.deleteProject = async (req, res) => {
       message: "Deleted Project successfully",
       project: deletedProject,
     });
-
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Failed to Delete the project", error : error });
+      .json({ message: "Failed to Delete the project", error: error });
   }
 };
