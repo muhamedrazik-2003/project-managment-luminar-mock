@@ -101,7 +101,7 @@ exports.editProject = async (req, res) => {
     console.log("new updated project : ", updatedProject);
 
     res
-      .status(201)
+      .status(200)
       .json({ message: "Project Updated Successfully", project: updatedProject });
   } catch (error) {
     console.error(error);
