@@ -26,8 +26,7 @@ function AddOrEditProject() {
     } : {})
 
     console.log("projectData", projectData)
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
 
         const {
             projectName,
@@ -74,7 +73,7 @@ function AddOrEditProject() {
     return (
         <main className='px-[120px] py-10 space-y-6'>
             <h1 className='text-3xl font-bold'>{formFormat === "add" ? "Add New Project" : "Edit Your Project"}</h1>
-            <form action="" method={handleSubmit} className='space-y-4'>
+            <div className='space-y-4'>
                 <div className='flex flex-col gap-2'>
                     <label htmlFor="projectName" className='px-2'>
                         Project Name
@@ -150,8 +149,8 @@ function AddOrEditProject() {
                         className='px-4 py-1.5 border border-indigo-300 rounded-3xl shadow-md'
                     />
                 </div>
-
-            </form>
+                <button onClick={handleSubmit}  className='px-4 py-1.5 bg-indigo-700 text-white rounded-3xl flex gap-2 items-center'> Submit</button>
+            </div>
         </main>
     )
 }
