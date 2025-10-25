@@ -11,6 +11,7 @@ exports.addProject = async (req, res) => {
       status,
       budget,
     } = req.body;
+    console.log(req.body)
     if (
       !projectName ||
       !projectManager ||

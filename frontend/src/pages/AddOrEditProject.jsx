@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { addProject } from '../apiConfig/allApi';
+import { addProject, getAllProjects } from '../apiConfig/allApi';
 import { toast } from 'react-toastify';
 
 function AddOrEditProject() {
     const { pathname } = useLocation();
     const { projectId } = useParams();
     const navigate = useNavigate();
+
     let formFormat = ""
 
     if (pathname.includes("/new")) {
@@ -14,6 +15,27 @@ function AddOrEditProject() {
     } else {
         formFormat = "update"
     }
+
+    const [projects, setProjects] = useState([])
+
+    const getAllProjectsApi = async () => {
+        try {
+            const response = await getAllProjects();
+            if (response.status === 200) {
+                setProjects(response.data.project)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to retrieve Projects")
+        }
+    }
+    useEffect(() => {
+        getAllProjectsApi();
+    }, [])
+
+    console.log(projects)
+    const currentProject = projects?.filter(project => project._id === projectId)
+    console.log(currentProject)
 
     const [projectData, setProjectData] = useState(formFormat === "add" ? {
         projectName: '',
@@ -23,9 +45,10 @@ function AddOrEditProject() {
         endDate: '',
         status: '',
         budget: 0
-    } : {})
+    } : currentProject)
 
-    console.log("projectData", projectData)
+    console.log(projectData)
+
     const handleSubmit = async () => {
 
         const {
@@ -52,7 +75,7 @@ function AddOrEditProject() {
         if (formFormat === "add") {
             try {
                 const response = await addProject(projectData);
-                if (response.status === 200) {
+                if (response.status === 201) {
                     toast.success("project Added Successfully")
                     navigate('/')
                     return
@@ -79,6 +102,7 @@ function AddOrEditProject() {
                         Project Name
                     </label>
                     <input
+                        value={currentProject?.projectName}
                         onChange={(e) => setProjectData(prev => ({ ...prev, projectName: e.target.value }))}
                         type="text"
                         placeholder='Provide Your Project Name'
@@ -90,6 +114,7 @@ function AddOrEditProject() {
                         Project Manager
                     </label>
                     <input
+                        value={currentProject?.projectManager}
                         onChange={(e) => setProjectData(prev => ({ ...prev, projectManager: e.target.value }))}
                         type="text"
                         placeholder='Provide Your Project Manager'
@@ -101,6 +126,7 @@ function AddOrEditProject() {
                         Team Members <span className='text-amber-400 text-sm'>(comma seperated)</span>
                     </label>
                     <input
+                        value={currentProject?.teamMembers?.join(", ")}
                         onChange={(e) => handleTeamMembers(e.target.value)}
                         type="text"
                         placeholder='Provide Team Members seperated by comma eg: Rahul, Varsha ...'
@@ -112,6 +138,7 @@ function AddOrEditProject() {
                         Start date
                     </label>
                     <input
+                        value={currentProject?.startDate}
                         onChange={(e) => setProjectData(prev => ({ ...prev, startDate: e.target.value }))}
                         type="Date"
                         className='px-4 py-1.5 border border-indigo-300 rounded-3xl shadow-md'
@@ -122,6 +149,7 @@ function AddOrEditProject() {
                         End Date
                     </label>
                     <input
+                        value={currentProject?.startDate}
                         onChange={(e) => setProjectData(prev => ({ ...prev, endDate: e.target.value }))}
                         type="date"
                         className='px-4 py-1.5 border border-indigo-300 rounded-3xl shadow-md'
@@ -132,6 +160,7 @@ function AddOrEditProject() {
                         Project Status
                     </label>
                     <input
+                        value={currentProject?.status}
                         onChange={(e) => setProjectData(prev => ({ ...prev, status: e.target.value }))}
                         type="text"
                         placeholder='Provide Your Project status'
@@ -143,13 +172,14 @@ function AddOrEditProject() {
                         Project Budget
                     </label>
                     <input
+                        value={currentProject?.budget}
                         onChange={(e) => setProjectData(prev => ({ ...prev, budget: e.target.value }))}
                         type="text"
                         placeholder='Provide Your Project Budget'
                         className='px-4 py-1.5 border border-indigo-300 rounded-3xl shadow-md'
                     />
                 </div>
-                <button onClick={handleSubmit}  className='px-4 py-1.5 bg-indigo-700 text-white rounded-3xl flex gap-2 items-center'> Submit</button>
+                <button onClick={handleSubmit} className='px-4 py-1.5 bg-indigo-700 text-white rounded-3xl flex gap-2 items-center'> Submit</button>
             </div>
         </main>
     )
