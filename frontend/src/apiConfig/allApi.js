@@ -1,5 +1,5 @@
 import axios from "axios"
-const baseUrl = "http://localhost:8000/api/projects"
+const baseUrl = "https://project-managment-luminar-mock.onrender.com/api/projects"
 
 const api = axios.create({
     baseURL : baseUrl,
