@@ -10,7 +10,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Dashboard/>}/>
       <Route path='/project/new' element={<AddOrEditProject/>}/>
-      <Route path='/project/update' element={<AddOrEditProject/>}/>
+      <Route path='/project/update/:projectId' element={<AddOrEditProject/>}/>
     </Routes>
     <ToastContainer position='top-right'/>
     </>
